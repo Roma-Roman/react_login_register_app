@@ -1,26 +1,68 @@
 import React from 'react';
 import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+import { Login } from './components/login/index'
+import { Register } from "./components/login/register";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoginActive: true,
+        }
+    }
+
+    componentDidMount() {
+        //Add .right by default
+        this.rightSide.classList.add('right');
+    }
+
+    changeState() {
+        const { isLoginActive } = this.state;
+        if (isLoginActive) {
+            this.rightSide.classList.remove('right');
+            this.rightSide.classList.add('left');
+        }
+        else {
+            this.rightSide.classList.remove('left');
+            this.rightSide.classList.add('right');
+        }
+
+        this.setState (prevState => ({isLoginActive: !prevState.isLoginActive }));
+    }
+
+    render() {
+        const { isLoginActive } = this.state;
+        const current = isLoginActive ? "Register" : "Login";
+        const currentActive = isLoginActive ? "Login" : "Register";
+
+        return (
+            <div className="App">
+                <div className="login">
+                    <RightSide current={current} containerRef={ref => this.rightSide = ref} onClick={this.changeState.bind(this)}/>
+
+                    <div className="container">
+                        {isLoginActive && <Login containerRef={(ref) => this.current = ref} /> }
+                        {!isLoginActive && <Register containerRef={(ref) => this.current = ref} />}
+                    </div>
+
+                    <img src={logo} className="App-logo" alt="logo" />
+                </div>
+            </div>
+        )
+    }
+}
+
+const RightSide = props => {
+    return (
+        <div className="right-side" ref={props.containerRef} onClick={props.onClick}>
+           <div className="inner-container">
+               <div className="text">
+                   {props.current}
+               </div>
+           </div>
+        </div>
+    )
 }
 
 export default App;
